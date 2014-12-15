@@ -8,8 +8,6 @@
 
 #ifdef __cplusplus
     #include <vector>
-    #include <map>
-
     
     #include <sstream>
     
@@ -29,6 +27,8 @@
     std::string global_database_name = "";
     bool global_created_database = false;
     sqlite3 *global_database_for_the_easy_sqlite_library;
+    std::vector<easy_sqlite_table*> vector_of_tables;
+    
 
 // # Execute Query
 //  * Executes the query defined in the query parameter
@@ -46,7 +46,7 @@
         oss << "CREATE TABLE IF NOT EXISTS \"" << table_name << table_name_suffix  << "\" "<< schema;
         char * sErrMsg = 0;
         sqlite3_exec(global_database_for_the_easy_sqlite_library, oss.str().c_str(), NULL, NULL, &sErrMsg);
-        return new easy_sqlite_table(table_name,table_name_suffix);
+        return new easy_sqlite_table(table_name,table_name_suffix, schema);
     }
 
 // # Start Insert
@@ -113,20 +113,20 @@ void create_easy_sqlite_tables();
 bool initialised_easy_sqlite_library = false;
 
 extern "C" {
-void initialise_easy_sqlite_library() {
-    printf("Actually going to initialise wish me luck!");
-    if (initialised_easy_sqlite_library) return;
-    open_sqlite("easy_sqlite_library.db");
-    std::string table_name = "OpCodeCalls";
-    std::string table_name_suffix = "";
-    std::string schema = "";
-    create_table(table_name, table_name_suffix, schema);
-    create_easy_sqlite_tables();
-    initialised_easy_sqlite_library=true;
-}
+    void initialise_easy_sqlite_library() {
+        printf("Actually going to initialise wish me luck!");
+        if (initialised_easy_sqlite_library) return;
+        open_sqlite("easy_sqlite_library.db");
+        std::string table_name = "OpCodeCalls";
+        std::string table_name_suffix = "";
+        std::string schema = "";
+        create_table(table_name, table_name_suffix, schema);
+        create_easy_sqlite_tables();
+        initialised_easy_sqlite_library=true;
+    }
 }
 
-void easy_sqlite_table::insert_3_strings(std::string str1, std::string str2, std::string str3) {
+void easy_sqlite_table::insert_3_strings(std::string str1, std::string str2, std::string str3, std::string schema) {
     std::ostringstream oss;
     oss << "( ";
     oss << "'" << str1 << "', ";
@@ -136,10 +136,31 @@ void easy_sqlite_table::insert_3_strings(std::string str1, std::string str2, std
     insert_data(oss.str());
 }
 
+void easy_sqlite_table::setup_table() {
+    vector_of_tables.push_back(this);
+}
+
+// # Insert data adds data to the Map before flushing to the database
 void easy_sqlite_table::insert_data(std::string data) {
+    int count = 0;
+    map_of_values.insert(TemplateOfStrStrPair(data, double_to_string(count)));
+}
+
+void easy_sqlite_table::insert_data_to_database(std::string data, std::string schema) {
     std::ostringstream oss;
-    oss << "INSERT INTO \"" << table_name << table_name_suffix  << "\" (Program_counter, Value1, Value2) VALUES " << data;
+    oss << "INSERT INTO \"" << table_name << table_name_suffix  << "\" " /*<< schema*/ << " VALUES " << data;
     execute_query(oss.str().c_str());
+}
+
+void easy_sqlite_table::flush_data() {
+    TemplateOfStrStrMap::iterator p;
+    for(p = map_of_values.begin(); p!=map_of_values.end(); ++p)
+        {
+            // printf("Flushing all sqlite tables");
+            std::string strValue = p->second;
+            std::string strKey= p->first;
+            insert_data_to_database(strKey, schema);
+        }
 }
 
 extern "C" {
@@ -148,4 +169,18 @@ const char* double_to_string(double double_value) {
     s << double_value;
     return s.str().c_str();
     
-}}
+}
+
+void flush_all_sqlite_tables() {
+    
+    for (std::vector<easy_sqlite_table*>::iterator it = vector_of_tables.begin(); it != vector_of_tables.end(); ++it)
+       { 
+        
+        easy_sqlite_table* table = *it;
+        
+        table->flush_data();
+        
+        }
+}
+
+}

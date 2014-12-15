@@ -19,10 +19,12 @@ void create_easy_sqlite_tables();
 extern "C" {
 #endif
 
-// ## Logging functions for basic emulator functions
-void log_opcode(char* opcode_name, char* value1, char* value2);
-void log_double_string_string(double opcode_name, char* value1, char* value2);
-void log_jump(int new_pc,int old_pc);
+	// ## Logging functions for basic emulator functions
+	void log_opcode(char* opcode_name, char* value1, char* value2);
+	void log_double_string_string(double opcode_name, char* value1, char* value2);
+	void log_jump(int new_pc,int old_pc);
+	void log_notes_string_double(char* str_value, double double_value);
+	void log_opcode_string_double(char* str_value, double double_value);
 
 #ifdef __cplusplus
 }

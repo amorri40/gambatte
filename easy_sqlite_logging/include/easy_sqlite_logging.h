@@ -12,15 +12,27 @@
 // # C++ Block to define the main classes used to represent a table
 #ifdef __cplusplus
 	#include <string>
+    #include <map>
+	#include <vector>
+	typedef std::map<std::string, std::string> TemplateOfStrStrMap;
+	typedef std::pair<std::string, std::string> TemplateOfStrStrPair;
 
 	class easy_sqlite_table {
 	    std::string table_name="";
 	    std::string table_name_suffix="";
+	    TemplateOfStrStrMap map_of_values;
+	    std::string schema;
 		public:
-		    easy_sqlite_table(std::string table_name, std::string table_name_suffix) : table_name(table_name), table_name_suffix(table_name_suffix) {}
-		    void insert_3_strings(std::string str1, std::string str2, std::string str3);
+		    easy_sqlite_table(std::string table_name, std::string table_name_suffix, std::string schema) : table_name(table_name), table_name_suffix(table_name_suffix), schema(schema) {
+		    	setup_table();
+		    }
+		    void insert_3_strings(std::string str1, std::string str2, std::string str3, std::string schema);
 		    void insert_data(std::string data);
+		    void insert_data_to_database(std::string data, std::string schema);
+		    void flush_data();
+		    void setup_table();
 	};
+	
 
 	// # Create Table
 	//   * Used to create a table in the database with the specified name and schema
@@ -35,6 +47,7 @@
 #endif
 
     void initialise_easy_sqlite_library();
+    void flush_all_sqlite_tables();
     const char* double_to_string(double double_value);
 
 #ifdef __cplusplus

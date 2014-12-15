@@ -20,6 +20,7 @@
 #include "memory.h"
 #include "savestate.h"
 #include "../../easy_sqlite_logging/include/easy_sqlite_logging.h"
+#include "../../easy_sqlite_logging/include/customised_sqlite_logging.h"
 
 namespace gambatte {
 
@@ -44,8 +45,9 @@ CPU::CPU()
 }
 
 long CPU::runFor(unsigned long const cycles) {
-	printf("CPU::runFor %ul", cycles);
-	
+	// printf("CPU::runFor %ul", cycles);
+	log_notes_string_double("CPU::runFor",cycles);
+
 	process(cycles);
 
 	long const csb = mem_.cyclesSinceBlit(cycleCounter_);
@@ -513,6 +515,8 @@ void CPU::process(unsigned long const cycles) {
 				pc = (pc - 1) & 0xFFFF;
 				skip_ = false;
 			}
+
+			log_opcode_string_double("Opcode:",opcode);
 
 			switch (opcode) {
 			case 0x00:
@@ -1988,6 +1992,9 @@ void CPU::process(unsigned long const cycles) {
 		cycleCounter = mem_.event(cycleCounter);
 	}
 
+	// not active so lets flush:
+	flush_all_sqlite_tables();
+	
 	a_ = a;
 	cycleCounter_ = cycleCounter;
 }

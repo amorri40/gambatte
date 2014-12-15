@@ -1,4 +1,6 @@
 import subprocess
+import os
+
 
 cflags   = ARGUMENTS.get('CFLAGS', '-Wall -Wextra -O2 -fomit-frame-pointer')
 cxxflags = ARGUMENTS.get('CXXFLAGS', cflags + ' -fno-exceptions -fno-rtti')
@@ -11,6 +13,7 @@ env = Environment(CPPPATH = ['src', '../libgambatte/include', '../common'],
                   CXXFLAGS = cxxflags,
                   CPPDEFINES = [ 'HAVE_STDINT_H', None ],
                   variables = vars)
+env['ENV']['TERM'] = os.environ['TERM']
 env.ParseConfig('sdl-config --cflags --libs')
 
 sourceFiles = Split('''
