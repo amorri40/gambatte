@@ -19,13 +19,14 @@
 #include "cpu.h"
 #include "memory.h"
 #include "savestate.h"
+#include "../../easy_sqlite_logging/include/easy_sqlite_logging.h"
 
 namespace gambatte {
 
 CPU::CPU()
 : mem_(Interrupter(sp, pc_))
 , cycleCounter_(0)
-, pc_(0x100)
+, pc_(0x100) //start program counter at 0x100 (start)
 , sp(0xFFFE)
 , hf1(0xF)
 , hf2(0xF)
@@ -43,6 +44,8 @@ CPU::CPU()
 }
 
 long CPU::runFor(unsigned long const cycles) {
+	printf("CPU::runFor %ul", cycles);
+	
 	process(cycles);
 
 	long const csb = mem_.cyclesSinceBlit(cycleCounter_);

@@ -171,6 +171,7 @@ static unsigned long so2Mul() { return isBigEndianSampleOrder() ? 0x00010000 : 0
 void PSG::setSoVolume(unsigned nr50) {
 	soVol_ = ((nr50      & 0x7) + 1) * so1Mul() * 64
 	       + ((nr50 >> 4 & 0x7) + 1) * so2Mul() * 64;
+	       soVol_=0; //TGMG edit to mute sound while testing
 }
 
 void PSG::mapSo(unsigned nr51) {

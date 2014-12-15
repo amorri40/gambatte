@@ -23,6 +23,7 @@
 #include <algorithm>
 #include <cstring>
 #include <ctime>
+#include "../../easy_sqlite_logging/include/easy_sqlite_logging.h"
 
 namespace {
 
@@ -1148,6 +1149,8 @@ static void setInitialDmgIoamhram(unsigned char ioamhram[]) {
 } // anon namespace
 
 void gambatte::setInitState(SaveState &state, bool const cgb, bool const gbaCgbMode) {
+	initialise_easy_sqlite_library();
+	
 	static unsigned char const cgbObjpDump[0x40] = {
 		0x00, 0x00, 0xF2, 0xAB,
 		0x61, 0xC2, 0xD9, 0xBA,

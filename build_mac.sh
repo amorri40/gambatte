@@ -1,0 +1,2 @@
+cd libgambatte
+scons

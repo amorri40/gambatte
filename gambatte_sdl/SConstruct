@@ -38,6 +38,9 @@ sourceFiles = Split('''
 			../common/videolink/vfilters/maxsthq2x.cpp
 			../common/videolink/vfilters/maxsthq3x.cpp
 			../libgambatte/libgambatte.a
+			../easy_sqlite_logging/src/easy_sqlite_logging.cpp
+			../easy_sqlite_logging/src/customised_sqlite_logging.cpp
+			../easy_sqlite_logging/src/sqlite3.c
 		   ''')
 
 conf = env.Configure()

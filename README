@@ -102,6 +102,14 @@ Installing after a compile simply amounts to copying the generated binary
 (either gambatte_qt/bin/gambatte_qt<.exe> or gambatte_sdl/gambatte_sdl<.exe>)
 to wherever you'd like to keep it.
 
+# Building and Running on MacOSX
+--------------------------------------------------------------------------------
+Run the following commands in order:
+./build_mac.sh
+./build_sql.sh
+cd gambatte_sql
+./gambatte_sdl path/to/your/rom/file
+
 Thanks
 --------------------------------------------------------------------------------
 Derek Liauw Kie Fa (Kreed)
